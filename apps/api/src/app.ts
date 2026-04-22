@@ -2,6 +2,7 @@ import "dotenv/config";
 
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
+import multipart from "@fastify/multipart";
 import requestContext from "@fastify/request-context";
 import Fastify from "fastify";
 import {
@@ -15,6 +16,7 @@ import { registerAuth } from "./plugins/auth.js";
 import { registerClerkWebhookRoute } from "./routes/webhooks/clerk.js";
 import { registerHealthRoute } from "./routes/health.js";
 import { registerMeRoute } from "./routes/me.js";
+import { registerVoiceTranscribeRoute } from "./routes/voice/transcribe.js";
 
 export async function buildServer() {
   const app = Fastify({
@@ -37,6 +39,7 @@ export async function buildServer() {
     credentials: true
   });
   await app.register(helmet);
+  await app.register(multipart);
 
   app.addHook("onRequest", async (request, reply) => {
     const requestId = nanoid();
@@ -60,6 +63,7 @@ export async function buildServer() {
   await registerAuth(app);
   await registerHealthRoute(app);
   await registerMeRoute(app);
+  await registerVoiceTranscribeRoute(app);
   await registerClerkWebhookRoute(app);
 
   return app;
