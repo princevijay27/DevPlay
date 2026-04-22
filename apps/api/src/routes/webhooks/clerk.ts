@@ -5,6 +5,29 @@ import { z } from "zod";
 import { db, users } from "@devflow/db";
 import type { FastifyInstance } from "fastify";
 
+const webhookHeadersSchema = z
+  .object({
+    "svix-id": z.string().min(1),
+    "svix-timestamp": z.string().min(1),
+    "svix-signature": z.string().min(1)
+  })
+  .passthrough();
+
+const webhookBodySchema = z
+  .object({
+    type: z.string().min(1),
+    data: z.unknown()
+  })
+  .passthrough();
+
+const webhookSuccessSchema = z.object({
+  ok: z.literal(true)
+});
+
+const webhookErrorSchema = z.object({
+  message: z.string()
+});
+
 const clerkUserSchema = z.object({
   id: z.string(),
   email_addresses: z.array(
@@ -25,62 +48,77 @@ function getHeaders(headers: Record<string, unknown>) {
 }
 
 export async function registerClerkWebhookRoute(app: FastifyInstance) {
-  app.post("/api/webhooks/clerk", async (request, reply) => {
-    const secret = process.env.CLERK_WEBHOOK_SECRET;
+  app.post(
+    "/api/webhooks/clerk",
+    {
+      schema: {
+        headers: webhookHeadersSchema,
+        body: webhookBodySchema,
+        response: {
+          200: webhookSuccessSchema,
+          400: webhookErrorSchema,
+          500: webhookErrorSchema
+        }
+      }
+    },
+    async (request, reply) => {
+      const secret = process.env.CLERK_WEBHOOK_SECRET;
 
-    if (!secret) {
-      return reply.status(500).send({ message: "Missing webhook secret" });
-    }
-
-    const payload = JSON.stringify(request.body ?? {});
-    const wh = new Webhook(secret);
-
-    let event: { type: string; data: unknown };
-
-    try {
-      event = wh.verify(payload, getHeaders(request.headers as Record<string, unknown>)) as {
-        type: string;
-        data: unknown;
-      };
-    } catch {
-      return reply.status(400).send({ message: "Invalid webhook signature" });
-    }
-
-    if (event.type === "user.deleted") {
-      const deletedUser = z.object({ id: z.string() }).parse(event.data);
-      await db.delete(users).where(eq(users.id, deletedUser.id));
-      return reply.status(200).send({ ok: true });
-    }
-
-    if (event.type === "user.created" || event.type === "user.updated") {
-      const user = clerkUserSchema.parse(event.data);
-      const primaryEmail = user.email_addresses[0]?.email_address;
-
-      if (!primaryEmail) {
-        return reply.status(400).send({ message: "Missing primary email" });
+      if (!secret) {
+        return reply.status(500).send({ message: "Missing webhook secret" });
       }
 
-      const name = [user.first_name, user.last_name].filter(Boolean).join(" ") || null;
+      const body = webhookBodySchema.parse(request.body);
+      const payload = JSON.stringify(body);
+      const wh = new Webhook(secret);
 
-      await db
-        .insert(users)
-        .values({
-          id: user.id,
-          email: primaryEmail,
-          name,
-          timezone: "UTC",
-          preferredLanguages: []
-        })
-        .onConflictDoUpdate({
-          target: users.id,
-          set: {
+      let event: { type: string; data: unknown };
+
+      try {
+        event = wh.verify(payload, getHeaders(request.headers as Record<string, unknown>)) as {
+          type: string;
+          data: unknown;
+        };
+      } catch {
+        return reply.status(400).send({ message: "Invalid webhook signature" });
+      }
+
+      if (event.type === "user.deleted") {
+        const deletedUser = z.object({ id: z.string() }).parse(event.data);
+        await db.delete(users).where(eq(users.id, deletedUser.id));
+        return reply.status(200).send({ ok: true });
+      }
+
+      if (event.type === "user.created" || event.type === "user.updated") {
+        const user = clerkUserSchema.parse(event.data);
+        const primaryEmail = user.email_addresses[0]?.email_address;
+
+        if (!primaryEmail) {
+          return reply.status(400).send({ message: "Missing primary email" });
+        }
+
+        const name = [user.first_name, user.last_name].filter(Boolean).join(" ") || null;
+
+        await db
+          .insert(users)
+          .values({
+            id: user.id,
             email: primaryEmail,
             name,
-            updatedAt: new Date()
-          }
-        });
-    }
+            timezone: "UTC",
+            preferredLanguages: []
+          })
+          .onConflictDoUpdate({
+            target: users.id,
+            set: {
+              email: primaryEmail,
+              name,
+              updatedAt: new Date()
+            }
+          });
+      }
 
-    return reply.status(200).send({ ok: true });
-  });
+      return reply.status(200).send({ ok: true });
+    }
+  );
 }
