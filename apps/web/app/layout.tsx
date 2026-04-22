@@ -26,6 +26,12 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={inter.variable}>
+          <a
+            href="#main-content"
+            className="sr-only z-[60] rounded-xl bg-[var(--color-primary)] px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+          >
+            Skip to main content
+          </a>
           <Providers>{children}</Providers>
         </body>
       </html>

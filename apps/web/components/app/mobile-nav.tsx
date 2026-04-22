@@ -2,38 +2,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  AudioLines,
-  Gamepad2,
-  Home,
-  ListTodo,
-  Settings,
-  Trophy,
-  UserRound
-} from "lucide-react";
+import { AudioLines, Gamepad2, Home, ListTodo, Trophy } from "lucide-react";
 
 import { cn } from "@devflow/ui";
 
 const links = [
   { href: "/dashboard", label: "Home", icon: Home },
-  { href: "/voice-log", label: "VoiceLog", icon: AudioLines },
+  { href: "/voice-log", label: "Voice", icon: AudioLines },
   { href: "/tasks", label: "Tasks", icon: ListTodo },
-  { href: "/standup", label: "Standup", icon: UserRound },
-  { href: "/play", label: "DevPlay", icon: Gamepad2 },
-  { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
-  { href: "/settings", label: "Settings", icon: Settings }
+  { href: "/play", label: "Play", icon: Gamepad2 },
+  { href: "/leaderboard", label: "Ranks", icon: Trophy }
 ];
 
-export function Sidebar() {
+export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden border-r border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-6 md:block">
-      <div className="mb-8 px-3">
-        <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-muted)]">DevFlow</p>
-        <h2 className="mt-2 text-xl font-semibold">Workspace</h2>
-      </div>
-      <nav className="space-y-1">
+    <nav
+      aria-label="Primary"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-border)] bg-[color:color-mix(in_oklab,var(--color-surface)_92%,transparent)] backdrop-blur md:hidden"
+    >
+      <div className="grid grid-cols-5 gap-1 px-2 py-2">
         {links.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || (href === "/play" && pathname.startsWith("/play"));
 
@@ -43,7 +32,7 @@ export function Sidebar() {
               href={href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors",
+                "flex flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[11px] font-medium transition-colors",
                 active
                   ? "bg-[var(--color-primary)] text-white"
                   : "text-[var(--color-muted)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-foreground)]"
@@ -54,7 +43,7 @@ export function Sidebar() {
             </Link>
           );
         })}
-      </nav>
-    </aside>
+      </div>
+    </nav>
   );
 }

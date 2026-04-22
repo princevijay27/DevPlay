@@ -116,7 +116,7 @@ export function DevPlayHub() {
           <Badge variant="accent">4 game modes</Badge>
           <Badge>{selectedCard.currentRank}</Badge>
         </div>
-        <h1 className="text-3xl font-semibold">Developer game suite</h1>
+        <h1 className="text-2xl font-semibold sm:text-3xl">Developer game suite</h1>
         <p className="max-w-3xl text-[var(--color-muted)]">
           DevPlay is the play layer of DevFlow: short, deliberate practice loops for debugging, binary fluency,
           code golf, and regex thinking. This hub is the entry point for game selection, personal stats, and
@@ -135,7 +135,7 @@ export function DevPlayHub() {
                 className={slug === selectedGame ? "ring-2 ring-[var(--color-accent)]" : undefined}
               >
                 <CardHeader className="space-y-4">
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div className="space-y-2">
                       <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-surface-muted)]">
@@ -152,7 +152,7 @@ export function DevPlayHub() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-5">
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid gap-3 sm:grid-cols-3">
                     <div className="rounded-2xl bg-[var(--color-surface-muted)] p-3">
                       <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[var(--color-muted)]">
                         <Trophy className="h-3.5 w-3.5" />

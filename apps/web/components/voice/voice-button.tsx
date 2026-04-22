@@ -9,6 +9,7 @@ type VoiceButtonProps = {
   mode: "push" | "toggle";
   isListening: boolean;
   disabled?: boolean;
+  ariaLabel?: string;
   onStart: () => void;
   onStop: () => void;
 };
@@ -17,6 +18,7 @@ export function VoiceButton({
   mode,
   isListening,
   disabled = false,
+  ariaLabel,
   onStart,
   onStop
 }: VoiceButtonProps) {
@@ -67,6 +69,7 @@ export function VoiceButton({
       type="button"
       disabled={disabled}
       aria-pressed={isListening}
+      aria-label={ariaLabel ?? (isListening ? "Stop recording voice" : "Start recording voice")}
       onClick={
         mode === "toggle"
           ? () => {
@@ -84,7 +87,7 @@ export function VoiceButton({
       onTouchStart={mode === "push" ? onStart : undefined}
       onTouchEnd={mode === "push" ? onStop : undefined}
       className={cn(
-        "flex h-28 w-28 items-center justify-center rounded-full border text-white shadow-lg transition-transform active:scale-95",
+        "flex h-28 w-28 items-center justify-center rounded-full border text-white shadow-lg transition-transform focus-visible:ring-4 focus-visible:ring-[var(--color-accent)] active:scale-95",
         isListening
           ? "border-red-300 bg-red-500"
           : "border-[var(--color-border)] bg-[var(--color-primary)]",

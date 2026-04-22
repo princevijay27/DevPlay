@@ -58,7 +58,7 @@ export function VolumeMeter({ stream }: { stream: MediaStream | null }) {
   }, [stream]);
 
   return (
-    <div className="flex h-20 items-end justify-center gap-2">
+    <div aria-hidden="true" className="flex h-20 items-end justify-center gap-2">
       {levels.map((level, index) => (
         <motion.div
           key={index}
