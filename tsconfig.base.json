@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@devflow/ai": ["packages/ai/src/index.ts"],
+      "@devflow/db": ["packages/db/src/index.ts"],
+      "@devflow/shared": ["packages/shared/src/index.ts"],
+      "@devflow/ui": ["packages/ui/src/index.ts"]
+    }
+  }
+}

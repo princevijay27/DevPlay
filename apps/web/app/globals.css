@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(0.98 0.01 95);
+  --color-foreground: oklch(0.19 0.02 260);
+  --color-surface: oklch(1 0 0);
+  --color-surface-muted: oklch(0.95 0.01 95);
+  --color-primary: oklch(0.58 0.18 32);
+  --color-accent: oklch(0.74 0.14 170);
+  --color-destructive: oklch(0.58 0.21 22);
+  --color-border: oklch(0.88 0.01 95);
+  --color-muted: oklch(0.56 0.02 260);
+  --radius-card: 1rem;
+  --spacing-shell: 1.5rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-background: oklch(0.19 0.02 260);
+  --color-foreground: oklch(0.96 0.01 95);
+  --color-surface: oklch(0.24 0.02 260);
+  --color-surface-muted: oklch(0.28 0.02 260);
+  --color-primary: oklch(0.72 0.19 32);
+  --color-accent: oklch(0.8 0.12 170);
+  --color-destructive: oklch(0.67 0.2 22);
+  --color-border: oklch(0.34 0.02 260);
+  --color-muted: oklch(0.74 0.02 95);
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html,
+body {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, color-mix(in oklab, var(--color-accent) 18%, transparent), transparent 35%),
+    radial-gradient(circle at top right, color-mix(in oklab, var(--color-primary) 14%, transparent), transparent 28%),
+    var(--color-background);
+  color: var(--color-foreground);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-inter), sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
