@@ -1,5 +1,5 @@
-import { EmptyState } from "../../../components/ui/empty-state";
+import { redirect } from "next/navigation";
 
 export default function DevplayPage() {
-  return <EmptyState title="DevPlay hub" description="Game selection and difficulty ramping will be added in Phase 3." />;
+  redirect("/play");
 }

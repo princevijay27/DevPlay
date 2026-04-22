@@ -19,7 +19,7 @@ const links = [
   { href: "/voice-log", label: "VoiceLog", icon: AudioLines },
   { href: "/tasks", label: "Tasks", icon: ListTodo },
   { href: "/standup", label: "Standup", icon: UserRound },
-  { href: "/devplay", label: "DevPlay", icon: Gamepad2 },
+  { href: "/play", label: "DevPlay", icon: Gamepad2 },
   { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
   { href: "/settings", label: "Settings", icon: Settings }
 ];
@@ -35,7 +35,7 @@ export function Sidebar() {
       </div>
       <nav className="space-y-1">
         {links.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href;
+          const active = pathname === href || (href === "/play" && pathname.startsWith("/play"));
 
           return (
             <Link
